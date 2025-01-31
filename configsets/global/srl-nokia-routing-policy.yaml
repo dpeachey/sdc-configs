@@ -1,0 +1,21 @@
+---
+apiVersion: config.sdcio.dev/v1alpha1
+kind: ConfigSet
+metadata:
+  name: global-srl-nokia-routing-policy
+  namespace: default
+spec:
+  target:
+    targetSelector:
+      matchLabels:
+        sdcio.dev/vendor: nokia
+        sdcio.dev/nos: srl
+  priority: 10
+  config:
+  - path: /
+    value:
+      routing-policy:
+        policy:
+        - default-action:
+            policy-result: accept
+          name: all

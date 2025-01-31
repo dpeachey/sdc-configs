@@ -1,0 +1,33 @@
+---
+apiVersion: config.sdcio.dev/v1alpha1
+kind: ConfigSet
+metadata:
+  name: global-srl-nokia-network-instance
+  namespace: default
+spec:
+  target:
+    targetSelector:
+      matchLabels:
+        sdcio.dev/vendor: nokia
+        sdcio.dev/nos: srl
+  priority: 10
+  config:
+  - path: /
+    value:
+      network-instance:
+      - admin-state: enable
+        description: Management network instance
+        interface:
+        - name: mgmt0.0
+        name: mgmt
+        protocols:
+          linux:
+            export-neighbors: true
+            export-routes: true
+            import-routes: true
+        type: ip-vrf
+      routing-policy:
+        policy:
+        - default-action:
+            policy-result: accept
+          name: all

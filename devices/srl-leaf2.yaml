@@ -1,0 +1,134 @@
+apiVersion: config.sdcio.dev/v1alpha1
+kind: Config
+metadata:
+  name: srl-leaf2
+  namespace: default
+  labels:
+    config.sdcio.dev/targetName: srl-leaf2
+    config.sdcio.dev/targetNamespace: default
+spec:
+  priority: 10
+  config:
+  - path: /
+    value:
+      interface:
+      - admin-state: enable
+        description: spine:et-1/2.0
+        name: ethernet-1/1
+        subinterface:
+        - admin-state: enable
+          index: 0
+          ipv4:
+            address:
+            - ip-prefix: 192.168.0.5/31
+            admin-state: enable
+            unnumbered:
+              admin-state: disable
+      - admin-state: enable
+        name: ethernet-1/2
+        subinterface:
+        - admin-state: enable
+          index: 0
+          type: bridged
+          vlan:
+            encap:
+              untagged: {}
+        vlan-tagging: true
+      - admin-state: enable
+        name: mgmt0
+        subinterface:
+        - admin-state: enable
+          index: 0
+          ipv4:
+            admin-state: enable
+            dhcp-client: {}
+          ipv6:
+            admin-state: enable
+            dhcp-client: {}
+      - admin-state: enable
+        description: Loopback
+        name: system0
+        subinterface:
+        - admin-state: enable
+          index: 0
+          ipv4:
+            address:
+            - ip-prefix: 172.16.0.12/32
+            admin-state: enable
+            unnumbered:
+              admin-state: disable
+      network-instance:
+      # - admin-state: enable
+      #   interface:
+      #   - name: ethernet-1/2.0
+      #   name: CLIENT
+      #   protocols:
+      #     bgp-evpn:
+      #       bgp-instance:
+      #       - admin-state: enable
+      #         evi: 111
+      #         id: 1
+      #         vxlan-interface: vxlan1.1
+      #     bgp-vpn:
+      #       bgp-instance:
+      #       - id: 1
+      #         route-target:
+      #           export-rt: target:172.16.0.12:111
+      #           import-rt: target:172.16.0.12:111
+      #   type: mac-vrf
+      #   vxlan-interface:
+      #   - name: vxlan1.1
+      - admin-state: enable
+        description: Default VRF
+        interface:
+        - name: ethernet-1/1.0
+        - name: system0.0
+        name: default
+        protocols:
+          bgp:
+            afi-safi:
+            - admin-state: enable
+              afi-safi-name: ipv4-unicast
+            autonomous-system: 64512
+            group:
+            - afi-safi:
+              - admin-state: enable
+                afi-safi-name: evpn
+              - admin-state: disable
+                afi-safi-name: ipv4-unicast
+              export-policy: all
+              group-name: IBGP-OVERLAY
+              import-policy: all
+              peer-as: 64512
+              timers:
+                minimum-advertisement-interval: 1
+            neighbor:
+            - peer-address: 172.16.0.10
+              peer-group: IBGP-OVERLAY
+              transport:
+                local-address: 172.16.0.12
+            router-id: 172.16.0.12
+          isis:
+            instance:
+            - admin-state: enable
+              interface:
+              - circuit-type: point-to-point
+                interface-name: ethernet-1/1.0
+                ipv4-unicast:
+                  admin-state: enable
+                level:
+                - level-number: 2
+              - admin-state: enable
+                interface-name: system0.0
+                ipv4-unicast:
+                  admin-state: enable
+                level:
+                - level-number: 2
+                passive: true
+              ipv4-unicast:
+                admin-state: enable
+              level-capability: L2
+              name: ISIS
+              net:
+              - 49.0001.0000.0000.0012.00
+        type: default

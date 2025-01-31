@@ -1,0 +1,196 @@
+---
+apiVersion: config.sdcio.dev/v1alpha1
+kind: ConfigSet
+metadata:
+  name: global-srl-nokia-system
+  namespace: default
+spec:
+  target:
+    targetSelector:
+      matchLabels:
+        sdcio.dev/vendor: nokia
+        sdcio.dev/nos: srl
+  priority: 10
+  config:
+  - path: /
+    value:
+      system:
+        aaa:
+          authentication:
+            admin-user:
+              ssh-key:
+              - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCtxsljGhy2DWg9/VwyRwsz2xEfscEuXOgd+z9aXLBXjEEPedzVAs84fAo981ap4xVmbB7gZOPwDM0jWWrGhv94WbWG5ZA7RjoAdp7EscCtv68r2gudagfxvaRHFQntgZt0c5tJztleXYLjaSvH5Nk/TDnVmOKiVKz/DZLuUx80YTb0udtz4qmFxSLswVbCr5YDtkdfaZ2fef3uEq21siVe+KNwL3gurBSUMKiWAPcQiSlBFXOjt0dLT3juy3D7ck3RaLirq07xeJvrJwDghEpvSpZnPZf7v8UmyIyv90edjC/0YogJV962IMzoT8s8+179glEKQBNHHRPm0KdX1BKjOpAFhx3zcTK6cxbG5Zbjcq0Vw86SjsiO4gz8QkBda6o/AtvqdQ8KOg+IpfVJ/j9/zyIeU1Ep9oWXzmx8i2s+rSTkNTdvi1lTKGpTCD2jFa5uxisR5dVoeKxMsJNaS7NxjIo0ZARriwGMnh+s8mA3ZZVYqnKJsGMUs02I0aSd0QU=
+            authentication-method:
+            - local
+            idle-timeout: 7200
+            linuxadmin-user:
+              password: $6$UPu15BzI.gC/DZc4$5XrpbVMJ4KX5u84su9xXLCb9FTi/.vw.C8Xk8Z4U2EDAIhWAPg3lfLdzm.1NaCHsdvxCMlROR0RyZwfkqV/Pd0
+              ssh-key:
+              - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCtxsljGhy2DWg9/VwyRwsz2xEfscEuXOgd+z9aXLBXjEEPedzVAs84fAo981ap4xVmbB7gZOPwDM0jWWrGhv94WbWG5ZA7RjoAdp7EscCtv68r2gudagfxvaRHFQntgZt0c5tJztleXYLjaSvH5Nk/TDnVmOKiVKz/DZLuUx80YTb0udtz4qmFxSLswVbCr5YDtkdfaZ2fef3uEq21siVe+KNwL3gurBSUMKiWAPcQiSlBFXOjt0dLT3juy3D7ck3RaLirq07xeJvrJwDghEpvSpZnPZf7v8UmyIyv90edjC/0YogJV962IMzoT8s8+179glEKQBNHHRPm0KdX1BKjOpAFhx3zcTK6cxbG5Zbjcq0Vw86SjsiO4gz8QkBda6o/AtvqdQ8KOg+IpfVJ/j9/zyIeU1Ep9oWXzmx8i2s+rSTkNTdvi1lTKGpTCD2jFa5uxisR5dVoeKxMsJNaS7NxjIo0ZARriwGMnh+s8mA3ZZVYqnKJsGMUs02I0aSd0QU=
+          server-group:
+          - name: local
+            type: local
+        banner:
+          login-banner: |
+            ................................................................
+            :                  Welcome to Nokia SR Linux!                  :
+            :              Open Network OS for the NetOps era.             :
+            :                                                              :
+            :    This is a freely distributed official container image.    :
+            :                      Use it - Share it                       :
+            :                                                              :
+            : Get started: https://learn.srlinux.dev                       :
+            : Container:   https://go.srlinux.dev/container-image          :
+            : Docs:        https://doc.srlinux.dev/23-10                   :
+            : Rel. notes:  https://doc.srlinux.dev/rn23-10-6               :
+            : YANG:        https://yang.srlinux.dev/v23.10.6               :
+            : Discord:     https://go.srlinux.dev/discord                  :
+            : Contact:     https://go.srlinux.dev/contact-sales            :
+            ................................................................
+        dns:
+          network-instance: mgmt
+          server-list:
+          - 10.43.0.10
+        gnmi-server:
+          admin-state: enable
+          network-instance:
+          - admin-state: enable
+            name: mgmt
+            port: 57400
+            services:
+            - srl_nokia-gnmi-server:gnmi
+            tls-profile: clab-profile
+            use-authentication: true
+          rate-limit: 65000
+          trace-options:
+          - request
+          - response
+          - common
+          unix-socket:
+            admin-state: enable
+            services:
+            - srl_nokia-gnmi-server:gnmi
+            - srl_nokia-gnmi-server:gnoi
+        json-rpc-server:
+          admin-state: enable
+          network-instance:
+          - http:
+              admin-state: enable
+            https:
+              admin-state: enable
+              tls-profile: clab-profile
+            name: mgmt
+        lldp:
+          admin-state: enable
+        logging:
+          buffer:
+          - buffer-name: messages
+            facility:
+            - facility-name: local6
+              priority:
+                match-above: informational
+            rotate: 3
+            size: "10000000"
+          - buffer-name: system
+            facility:
+            - facility-name: auth
+              priority:
+                match-above: warning
+            - facility-name: cron
+              priority:
+                match-above: warning
+            - facility-name: daemon
+              priority:
+                match-above: warning
+            - facility-name: ftp
+              priority:
+                match-above: warning
+            - facility-name: kern
+              priority:
+                match-above: warning
+            - facility-name: local0
+              priority:
+                match-above: warning
+            - facility-name: local1
+              priority:
+                match-above: warning
+            - facility-name: local2
+              priority:
+                match-above: warning
+            - facility-name: local3
+              priority:
+                match-above: warning
+            - facility-name: local4
+              priority:
+                match-above: warning
+            - facility-name: local5
+              priority:
+                match-above: warning
+            - facility-name: local7
+              priority:
+                match-above: warning
+            - facility-name: lpr
+              priority:
+                match-above: warning
+            - facility-name: mail
+              priority:
+                match-above: warning
+            - facility-name: news
+              priority:
+                match-above: warning
+            - facility-name: syslog
+              priority:
+                match-above: warning
+            - facility-name: user
+              priority:
+                match-above: warning
+            - facility-name: uucp
+              priority:
+                match-above: warning
+          file:
+          - facility:
+            - facility-name: local6
+              priority:
+                match-above: warning
+            file-name: messages
+            rotate: 3
+            size: "10000000"
+        snmp:
+          community: $aes1$AWDN9lMu7h3mv28=$Z3/CQMPW0G+AlSXytz74XA==
+          network-instance:
+          - admin-state: enable
+            name: mgmt
+        ssh-server:
+          network-instance:
+          - admin-state: enable
+            name: mgmt
+        tls:
+          server-profile:
+          - authenticate-client: false
+            certificate: |
+              -----BEGIN CERTIFICATE-----
+              MIID8zCCAtugAwIBAgICBnowDQYJKoZIhvcNAQELBQAwYTELMAkGA1UEBhMCVVMx
+              CTAHBgNVBAcTADEVMBMGA1UEChMMY29udGFpbmVybGFiMQkwBwYDVQQLEwAxJTAj
+              BgNVBAMTHGNsYWJlcm5ldGVzLXNybC1sZWFmMSBsYWIgQ0EwHhcNMjUwMTI3MjE0
+              NjU4WhcNMjYwMTI3MjE0NjU4WjBnMQswCQYDVQQGEwJVUzEJMAcGA1UEBxMAMRUw
+              EwYDVQQKEwxjb250YWluZXJsYWIxCTAHBgNVBAsTADErMCkGA1UEAxMic3JsLWxl
+              YWYxLmNsYWJlcm5ldGVzLXNybC1sZWFmMS5pbzCCASIwDQYJKoZIhvcNAQEBBQAD
+              ggEPADCCAQoCggEBANOQkZBrVipVRuiMESxTkXxx++/K5dTOm2rhaZCZext37OM0
+              6ldJ2MQLALZH0x6Rgj+1f2lsNCMC1KcnFkS1ZzpfcwGFVp4Qt8NawiaOlxbrVntQ
+              Vr1zOja4oPHo+O50GZRQ10qZAXpY3KFWzt6S2axjSXHff7YuuN5LLwStwm49wkBJ
+              BucWS20+GibaRG4cgODLOVOsH8rPxdIWisii45919STqUSMUNRZxQ20sFxIGWdAl
+              dSAu3oSxH0bdMmObtZ19rif4fXNYLfBplYE9RpJQfwzznwq0F85F/xsHVXg0zIyO
+              wSMc/+2XDAk+5Q3T8h7aEpatPZLcIVGupa+/P80CAwEAAaOBrjCBqzAOBgNVHQ8B
+              Af8EBAMCBaAwHQYDVR0lBBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMBMA4GA1UdDgQH
+              BAUBAgMEBjAfBgNVHSMEGDAWgBTmDQYXV/xGygbXuXwHN3jZQ4NwfjBJBgNVHREE
+              QjBAgglzcmwtbGVhZjGCCXNybC1sZWFmMYIic3JsLWxlYWYxLmNsYWJlcm5ldGVz
+              LXNybC1sZWFmMS5pb4cECgAACzANBgkqhkiG9w0BAQsFAAOCAQEAToHzQuE8noUB
+              zsvEU4rVLn+y7WkeGNuLTyfVhC0AmHdTKocmXzdRLLPP1XIcIJ4PTSdghy4kCyxF
+              ITm0WUT3i+5gzKaqCOah8jRkf0rpa1mmF44T59TaB3wZ6XJtUKpKUeTeHTOMH+2e
+              MPUoJ+gUJVxeLX5mgdU6ePqcZMF1WABPLMHNqdfSxcV5YNooD1sBPO2pktYK2Lo1
+              49czYP7gT/u+HDU7Q/smea2BQ1CWd1vflLRXtv20oTYx7mF3fO1blHqiuf3J2Dzv
+              4L5ApYAUSQrMoVGhIDmRcvtGDhvF8X7O0xmQyE5CCY7k2KxlLoTditeLDAfSJgEB
+              1ez7dS9yXA==
+              -----END CERTIFICATE-----
+            key: $aes1$ATS/6Li4ZFIa4G8=$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
+            name: clab-profile

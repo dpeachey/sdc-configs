@@ -1,0 +1,24 @@
+---
+apiVersion: config.sdcio.dev/v1alpha1
+kind: ConfigSet
+metadata:
+  name: leaf-srl-nokia-tunnel-interface
+  namespace: default
+spec:
+  target:
+    targetSelector:
+      matchLabels:
+        sdcio.dev/vendor: nokia
+        sdcio.dev/nos: srl
+        sdcio.dev/role: leaf
+  priority: 10
+  config:
+  - path: /
+    value:
+      tunnel-interface:
+      - name: vxlan1
+        vxlan-interface:
+        - index: 1
+          ingress:
+            vni: 1
+          type: bridged
