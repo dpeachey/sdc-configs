@@ -1,0 +1,48 @@
+---
+apiVersion: config.sdcio.dev/v1alpha1
+kind: ConfigSet
+metadata:
+  name: leaf-srl-nokia-network-instance
+  namespace: default
+spec:
+  target:
+    targetSelector:
+      matchLabels:
+        sdcio.dev/vendor: nokia
+        sdcio.dev/nos: srl
+        sdcio.dev/role: leaf
+  priority: 10
+  config:
+  - path: /
+    value:
+      network-instance:
+      - admin-state: enable
+        description: Default VRF
+        interface:
+        - name: ethernet-1/1.0
+        - name: system0.0
+        name: default
+        protocols:
+          isis:
+            instance:
+            - admin-state: enable
+              interface:
+              - circuit-type: point-to-point
+                interface-name: ethernet-1/1.0
+                ipv4-unicast:
+                  admin-state: enable
+                level:
+                - level-number: 2
+              - admin-state: enable
+                interface-name: system0.0
+                ipv4-unicast:
+                  admin-state: enable
+                level:
+                - level-number: 2
+                passive: true
+              ipv4-unicast:
+                admin-state: enable
+              level-capability: L2
+              name: ISIS
+        type: default
+
