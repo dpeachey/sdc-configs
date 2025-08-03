@@ -1,0 +1,42 @@
+apiVersion: config.sdcio.dev/v1alpha1
+kind: Config
+metadata:
+  name: clab-evpn-leaf2
+  namespace: default
+  labels:
+    config.sdcio.dev/targetName: clab-evpn-leaf2
+    config.sdcio.dev/targetNamespace: default
+spec:
+  priority: 10
+  config:
+  - path: /
+    value:
+      interface:
+      - name: ethernet-1/2
+        admin-state: enable
+        description: host1
+        subinterface:
+        - index: 0
+          admin-state: enable
+          type: bridged
+      network-instance:
+      - admin-state: enable
+        name: CLIENT
+        protocols:
+          bgp-evpn:
+            bgp-instance:
+            - admin-state: enable
+              evi: 111
+              id: 1
+              vxlan-interface: vxlan1.1
+          bgp-vpn:
+            bgp-instance:
+            - id: 1
+              route-target:
+                export-rt: target:172.16.0.12:111
+                import-rt: target:172.16.0.12:111
+        type: mac-vrf
+        vxlan-interface:
+        - name: vxlan1.1
+        interface:
+        - name: ethernet-1/2.0
